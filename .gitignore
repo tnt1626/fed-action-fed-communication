@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# IDEs
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and coverage
+logs/
+*.log
+.coverage
+htmlcov/
+
+# Local env and settings
+.env
+local_settings.py
+
+# Data and results (do not commit sensitive data)
+data/raw/
+data/processed/
+results/
+
+# compiled C extensions
+*.so
+
+# cache files
+.cache/
+
+# other
+*.swp
