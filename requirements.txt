@@ -1,0 +1,15 @@
+# Requirements for reproducing the analyses in this repository
+# Tested with Python 3.9+ (use a virtual environment or conda)
+
+numpy>=1.23
+pandas>=1.5
+matplotlib>=3.6
+seaborn>=0.12
+statsmodels>=0.14
+scipy>=1.9
+jupyterlab>=3.0
+notebook>=6.5
+tqdm>=4.60
+pyyaml>=6.0
+# Optional (for presentation/export):
+# nbconvert>=6.4
