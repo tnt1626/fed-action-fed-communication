@@ -24,47 +24,67 @@ src/
 - Recommended: use a virtual environment (venv or conda)
 
 ## Recommended workflow (important)
-The notebooks import the `utils` package using a relative top-level import (e.g. `from utils import load_data`). To ensure imports work correctly, either:
+The notebooks import the `utils` package using a relative top-level import (e.g., `from utils import load_data`). To ensure imports work correctly, either:
 
-Option A (recommended): start Jupyter from the `src/` folder so `src/` is the notebook working directory:
+- **Option A (recommended)**: Start Jupyter from the `src/` folder so `src/` is the notebook working directory:
+  ```bash
+  cd src
+  jupyter lab    # or jupyter notebook
+  ```
 
-```powershell
-cd src
-jupyter lab    # or jupyter notebook
-```
-
-Option B: start Jupyter from repo root and add `src/` to `PYTHONPATH` or modify `sys.path` at the top of the notebook:
-
-```python
-import sys
-sys.path.append('src')
-from utils import load_data, EventRolling, EventRollingConfig
-```
+- **Option B**: Start Jupyter from the repository root directory and append `src/` to `sys.path` (or add it to your `PYTHONPATH` environment variable):
+  ```python
+  import sys
+  sys.path.append('src')
+  from utils import load_data, EventRolling, EventRollingConfig
+  ```
+  *(Note: Relative path references to the `data/` directory are resolved dynamically in `data_merger.py` relative to the script location, so both Option A and Option B will load the data successfully.)*
 
 ## Notebooks
-- `src/event_regression.ipynb` — primary notebook that runs the event regression pipeline, produces summary tables and diagnostic figures.
+- `src/event_regression.ipynb` — primary notebook that runs the event regression pipeline, produces summary tables, and displays diagnostic figures inline.
 - `src/robustness.ipynb` — robustness checks: alternative windows, event definitions, and additional visualizations.
 
 Open the notebook(s) and run cells top-to-bottom to reproduce results.
 
-## Quick install and run (Windows example)
-1. Clone the repository.
-2. Create and activate a virtual environment, then install dependencies:
+## Quick install and run
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
-```
+1. **Clone the repository.**
+2. **Create and activate a virtual environment, then install dependencies:**
 
-3. Start Jupyter from `src/` (recommended) and open the notebooks:
+   **Windows (PowerShell):**
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-```powershell
-cd src
-jupyter lab
-```
+   **Linux / macOS (Bash/Zsh):**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-4. Code overview (what each component does)
+3. **Start Jupyter and open the notebooks:**
+   ```bash
+   cd src
+   jupyter lab
+   ```
+
+## Input Data Schema
+
+The analysis expects the following Excel spreadsheets in the `data/` directory:
+
+- **`fed_funds.xlsx`**: Daily Federal Funds Rate series.
+  - Columns needed: `observation_date` (renamed to `date` during import), `DFF` (renamed to `fed_funds`).
+- **`fomc.xlsx`**: FOMC meeting outcomes and dummy variables.
+  - Columns needed: `date`, `fomc_change` (with qualitative values `decrease`, `maintain`, `increase`), `fomc_event` (dummy indicators), and communication variables (e.g., `fomc_Monetary Policy Stance`).
+- **`FW.xlsx`**: FX Forward rate data (e.g., USD/VND 1y, etc.).
+  - Expected sheet structures: Multiple sheets containing date-matched exchange rates with `Exchange Date`, `Bid`, and `Ask` columns.
+- **`Spot.xlsx`**: FX Spot rate data.
+  - Expected sheet structures: Sheets with `Exchange Date`, `Bid`, and `Ask` columns for spot rates.
+
+## Code overview
 
 - `src/event_regression.ipynb` — Primary notebook:
   - Loads and preprocesses data using `load_data()` from `src/utils/data_merger.py`.
@@ -83,7 +103,7 @@ jupyter lab
   - `EventRollingConfig`: configuration for days_before/days_after, lags, significance level, covariance type, etc.
   - `EventRolling`: runs regressions (e.g., `rolling_event_regression_asymmetric()`), summarizes results (`summarize_results()`), and provides plotting functions for event quality.
 
-5. Example run (programmatic usage)
+## Example run (programmatic usage)
 
 ```python
 # Run from src/ (or ensure src/ is in PYTHONPATH)
@@ -94,7 +114,13 @@ df = load_data()
 
 # Configure and run
 cfg = EventRollingConfig(days_before=21, days_after=21, event_col='fomc_event')
-er = EventRolling(df=df, x_lagged_vars=['fed_funds'], x_non_lagged_vars=['fomc_Monetary Policy Stance'], y_vars=['Bid_FW_usd_vnd_1y'], config=cfg)
+er = EventRolling(
+    df=df, 
+    x_lagged_vars=['fed_funds'], 
+    x_non_lagged_vars=['fomc_Monetary Policy Stance'], 
+    y_vars=['Bid_FW_usd_vnd_1y'], 
+    config=cfg
+)
 results = er.rolling_event_regression_asymmetric()
 summary = er.summarize_results(results)
 ```

@@ -3,6 +3,10 @@ import numpy as np
 from typing import Literal
 import os
 
+# Resolve path to the 'data' directory relative to the file location (src/utils/data_merger.py)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", "data"))
+
 def load_data() -> pd.DataFrame:
     """
     Load and construct the main analysis dataset by merging:
@@ -22,8 +26,8 @@ def load_data() -> pd.DataFrame:
     """
     df = load_fed_funds_rate_data()
     df = load_fomc_data(df)
-    df = process_fw_spot_data(df, "..\\data\\FW.xlsx", "FW", 17)
-    df = process_fw_spot_data(df, "..\\data\\Spot.xlsx", "Spot", 27)
+    df = process_fw_spot_data(df, os.path.join(DATA_DIR, "FW.xlsx"), "FW", 17)
+    df = process_fw_spot_data(df, os.path.join(DATA_DIR, "Spot.xlsx"), "Spot", 27)
     return df
 
 
@@ -40,7 +44,7 @@ def load_fed_funds_rate_data() -> pd.DataFrame :
         pd.DataFrame: DataFrame containing daily Federal Funds Rate
         with columns ['date', 'fed_funds'].
     """
-    df = pd.read_excel('../data/fed_funds.xlsx')
+    df = pd.read_excel(os.path.join(DATA_DIR, 'fed_funds.xlsx'))
     rename = {
         'observation_date': 'date',
         'DFF': 'fed_funds'
@@ -67,7 +71,7 @@ def load_fomc_data(df: pd.DataFrame) -> pd.DataFrame :
     Returns:
         pd.DataFrame: Updated DataFrame including FOMC decision variables.
     """
-    fomc_df = pd.read_excel('../data/fomc.xlsx')
+    fomc_df = pd.read_excel(os.path.join(DATA_DIR, 'fomc.xlsx'))
 
     def get_fomc_action_dummy(fomc_change: str) -> int :
         if pd.isna(fomc_change):

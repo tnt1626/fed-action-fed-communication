@@ -11,5 +11,6 @@ jupyterlab>=3.0
 notebook>=6.5
 tqdm>=4.60
 pyyaml>=6.0
+openpyxl>=3.0
 # Optional (for presentation/export):
 # nbconvert>=6.4
