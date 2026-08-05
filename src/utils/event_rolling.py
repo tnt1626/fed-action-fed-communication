@@ -163,7 +163,7 @@ class EventRolling:
 
     def plot_event_quality(self, results_df: pd.DataFrame, r2_threshold: float = 0.05) -> None:
         if results_df.empty:
-            print("No data available for plotting.")
+            print("Không có dữ liệu để vẽ biểu đồ.")
             return
 
         sig_cols = [c for c in results_df.columns if c.startswith("significant_")]
@@ -179,27 +179,30 @@ class EventRolling:
         effective = results_df["is_effective"]
 
         plt.figure(figsize=(14, 5))
-        plt.plot(dates, r2, marker="o", label="R²", color="blue")
+        plt.plot(dates, r2, marker="o", label="Hệ số xác định R²", color="black", linewidth=1.5)
         plt.axhline(
             r2_threshold,
-            color="red",
+            color="gray",
             linestyle="--",
-            label=f"R² threshold = {r2_threshold}"
+            label=f"Ngưỡng R² = {r2_threshold}"
         )
 
         plt.scatter(
             dates[effective],
             r2[effective],
-            color="green",
-            label="Effective Events",
+            color="black",
+            facecolors="none",
+            edgecolors="black",
+            linewidths=2,
+            label="Sự kiện có ý nghĩa",
             s=100,
             zorder=3
         )
 
-        plt.title("Event effectiveness based on R² and statistical significance", fontsize=14)
-        plt.xlabel("Event date")
-        plt.ylabel("R-squared")
-        plt.grid(True)
+        plt.title("Hiệu quả của sự kiện dựa trên R² và ý nghĩa thống kê", fontsize=14)
+        plt.xlabel("Ngày diễn ra sự kiện")
+        plt.ylabel("Hệ số xác định R²")
+        plt.grid(True, linestyle=":", alpha=0.6)
         plt.legend()
         plt.tight_layout()
         plt.show()

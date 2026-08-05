@@ -45,8 +45,6 @@ htmlcov/
 local_settings.py
 
 # Data and results (do not commit sensitive data)
-data/raw/
-data/processed/
 results/
 
 # compiled C extensions
